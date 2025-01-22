@@ -1,10 +1,10 @@
 # Atoma Agents
 
-A powerful, extensible AI agent system for blockchain operations, currently supporting the Sui blockchain. This project aims to provide a comprehensive solution for interacting with various blockchain protocols through natural language processing.
+Built on the Sui blockchain and powered by Atoma Network's AI Infrastructure, Atoma agents are sets of extensible Intelligent Layer system for blockchain operations. This project aims to provide a comprehensive solution for interacting with various blockchain protocols through natural language processing.
 
 ## Vision
 
-Our goal is to create a full-fledged agent system that can handle complex blockchain operations through simple natural language commands. By leveraging AI, we're making blockchain interactions more accessible and intuitive for both developers and users.
+Our goal is to create a full-fledged agent system using the Atoma's distributed AI computation that can handle complex blockchain operations through simple natural language commands. By leveraging AI, we're making blockchain interactions more accessible and intuitive for both developers and users.
 
 ## Features
 
@@ -130,7 +130,7 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the Apache 2.0 - see the [LICENSE](LICENSE) file for details.
 
 ## Support
 
@@ -138,7 +138,8 @@ For support, please open an issue in the GitHub repository or contact the mainta
 
 ## Roadmap
 
-- [ ] Add support for more Sui protocols
+- [ ] Add support for more Sui protocols like Navi, Cetus, BlueFin, AlphaFi etc.
+- [ ] Allow the prompt to sequentially compose multiple tools
 - [ ] Implement cross-chain operations
 - [ ] Add more complex transaction types
 - [ ] Improve natural language processing capabilities
