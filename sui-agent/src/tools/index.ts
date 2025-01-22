@@ -1,7 +1,7 @@
-import intent_agent_prompt from "../prompts/intent_agent_prompt";
+import intent_agent_prompt from '../prompts/intent_agent_prompt';
 
-import { Tool, ToolParameter, toolResponse } from "../../@types/interface";
-import { atomaChat } from "../config/atoma";
+import { Tool, ToolParameter, toolResponse } from '../../@types/interface';
+import { atomaChat } from '../config/atoma';
 
 /**
  * Main tools management class
@@ -44,21 +44,21 @@ class Tools {
    */
   async selectAppropriateTool(query: string): Promise<toolResponse | null> {
     const finalPrompt = this.prompt.replace(
-      "${toolsList}",
+      '${toolsList}',
       JSON.stringify(this.getAllTools()),
     );
 
-    let ai: any = await atomaChat([
+    const ai: any = await atomaChat([
       {
         content: finalPrompt,
-        role: "system",
+        role: 'system',
       },
       {
-        content: query || "",
-        role: "user",
+        content: query || '',
+        role: 'user',
       },
     ]);
-    let res = ai.choices[0].message.content;
+    const res = ai.choices[0].message.content;
 
     const applicableTools: toolResponse[] = JSON.parse(res);
     if (applicableTools.length > 0) return applicableTools[0];

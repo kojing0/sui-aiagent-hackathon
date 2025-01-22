@@ -1,15 +1,28 @@
-import { IntentAgentResponse } from "../../@types/interface";
-import Tools from "../tools/";
-import { registerAllTools } from "../tools/ToolRegistry";
-import Utils from "../utils";
+import { IntentAgentResponse } from '../../@types/interface';
+import Tools from '../tools/';
+import { registerAllTools } from '../tools/ToolRegistry';
+import Utils from '../utils';
 
-// Initialize tools and utilities
+/**
+ * Tools instance for handling various tool-related operations
+ * Used across the agent system for processing and executing tasks
+ */
 const tools = new Tools();
+
+/**
+ * Utils instance that provides utility functions
+ * Initialized with tools instance for coordinated operations
+ */
 const utils = new Utils(tools);
 
 /**
  * Main agent class that handles intent processing and decision making
  * Coordinates between different agent types to process user queries
+ *
+ * @example
+ * const agent = new Agents();
+ * const response = await agent.SuperVisorAgent("What is the current price of the Sui token?");
+ * console.log(response);
  */
 class Agents {
   /**
@@ -20,7 +33,7 @@ class Agents {
   async IntentAgent(prompt: string) {
     // Register all available tools before processing
     registerAllTools(tools);
-    let IntentResponse: IntentAgentResponse =
+    const IntentResponse: IntentAgentResponse =
       (await tools.selectAppropriateTool(prompt)) as IntentAgentResponse;
     return IntentResponse;
   }
@@ -46,12 +59,12 @@ class Agents {
    */
   async SuperVisorAgent(prompt: string) {
     // Process intent
-    let res = await this.IntentAgent(prompt);
+    const res = await this.IntentAgent(prompt);
     console.log(res);
 
     // Make decision based on intent
-    let finalAnswer = await this.DecisionMakingAgent(res, prompt);
-    console.log(finalAnswer, "final");
+    const finalAnswer = await this.DecisionMakingAgent(res, prompt);
+    console.log(finalAnswer, 'final');
     return finalAnswer;
   }
 }
