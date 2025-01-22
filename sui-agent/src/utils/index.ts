@@ -5,54 +5,6 @@ import { IntentAgentResponse } from '../../@types/interface';
 import { randomUUID } from 'crypto';
 
 /**
- * Define custom error type for structured error responses
- */
-export type StructuredError = {
-  reasoning: string;
-  response: string;
-  status: 'failure';
-  query: string;
-  errors: string[];
-};
-
-/**
- * Type guard for Error objects
- */
-export function isError(error: unknown): error is Error {
-  return error instanceof Error;
-}
-
-/**
- * Generic error handler that creates a structured error response
- */
-export function handleError(
-  error: unknown,
-  context: {
-    reasoning: string;
-    query: string;
-  },
-): StructuredError {
-  const errorId = randomUUID();
-
-  let errorMessage: string;
-  if (isError(error)) {
-    errorMessage = error.message;
-  } else if (typeof error === 'string') {
-    errorMessage = error;
-  } else {
-    errorMessage = 'Unknown error occurred';
-  }
-
-  return {
-    reasoning: context.reasoning,
-    response: 'Operation unsuccessful',
-    status: 'failure',
-    query: context.query,
-    errors: [`Error ID: ${errorId} - ${errorMessage}`],
-  };
-}
-
-/**
  * Utility class for processing agent responses and making decisions
  * Handles the execution of tools and formatting of final responses
  */
@@ -145,3 +97,51 @@ class Utils {
 }
 
 export default Utils;
+
+/**
+ * Define custom error type for structured error responses
+ */
+export type StructuredError = {
+  reasoning: string;
+  response: string;
+  status: 'failure';
+  query: string;
+  errors: string[];
+};
+
+/**
+ * Type guard for Error objects
+ */
+export function isError(error: unknown): error is Error {
+  return error instanceof Error;
+}
+
+/**
+ * Generic error handler that creates a structured error response
+ */
+export function handleError(
+  error: unknown,
+  context: {
+    reasoning: string;
+    query: string;
+  },
+): StructuredError {
+  const errorId = randomUUID();
+
+  let errorMessage: string;
+  if (isError(error)) {
+    errorMessage = error.message;
+  } else if (typeof error === 'string') {
+    errorMessage = error;
+  } else {
+    errorMessage = 'Unknown error occurred';
+  }
+
+  return {
+    reasoning: context.reasoning,
+    response: 'Operation unsuccessful',
+    status: 'failure',
+    query: context.query,
+    errors: [`Error ID: ${errorId} - ${errorMessage}`],
+  };
+}
