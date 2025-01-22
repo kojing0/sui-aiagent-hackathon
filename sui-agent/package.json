@@ -8,8 +8,8 @@
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node dist/src/agent.js",
-    "dev": "nodemon ./src/agent.ts"
+    "start": "node dist/src/server.js",
+    "dev": "nodemon ./src/server.ts"
   },
   "keywords": [],
   "author": "",

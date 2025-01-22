@@ -2,8 +2,6 @@ import { SuiClient, SuiHTTPTransport } from '@mysten/sui.js/client';
 import { TransactionBlock } from '@mysten/sui.js/transactions';
 import {
   TokenBalance,
-  NetworkConfig,
-  NetworkConfigs,
   NETWORK_CONFIG,
 } from '../../@types/interface';
 
