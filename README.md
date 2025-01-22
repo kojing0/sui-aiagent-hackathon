@@ -28,7 +28,7 @@ Our goal is to create a full-fledged agent system using the Atoma's distributed 
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/atoma-agents.git
+git clone https://github.com/atoma-network/atoma-agents.git
 
 # Install dependencies
 cd atoma-agents
@@ -128,6 +128,7 @@ atoma-agents/
 ```
 
 ## Contributing
+
 We welcome contributions! Please see our [Contribution Guide](CONTRIBUTING.md) for details.
 
 ## License
