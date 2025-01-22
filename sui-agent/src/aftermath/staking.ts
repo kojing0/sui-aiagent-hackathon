@@ -1,4 +1,5 @@
 import { Aftermath } from 'aftermath-ts-sdk';
+import { handleError } from '../utils';
 
 // Initialize Aftermath SDK for mainnet
 const af = new Aftermath('MAINNET');
@@ -24,17 +25,12 @@ export async function getStakingPositions(
         errors: [],
       },
     ]);
-  } catch (error: any) {
-    const errorId = Math.random().toString(36).substring(2, 15);
+  } catch (error: unknown) {
     return JSON.stringify([
-      {
-        reasoning:
-          'The system encountered an issue while trying to retrieve staking positions.',
-        response: 'The attempt to fetch staking positions was unsuccessful.',
-        status: 'failure',
-        query: `Attempted to fetch staking positions for wallet: ${walletAddress}`,
-        errors: [`Error with ID: #${errorId}: ${error.message}`],
-      },
+      handleError(error, {
+        reasoning: 'Failed to retrieve staking positions',
+        query: `Attempted to fetch positions for wallet: ${walletAddress}`,
+      }),
     ]);
   }
 }
@@ -66,18 +62,12 @@ export async function getStakeTransaction(
         errors: [],
       },
     ]);
-  } catch (error: any) {
-    const errorId = Math.random().toString(36).substring(2, 15);
+  } catch (error: unknown) {
     return JSON.stringify([
-      {
-        reasoning:
-          'The system encountered an issue while trying to generate the staking transaction.',
-        response:
-          'The attempt to generate staking transaction was unsuccessful.',
-        status: 'failure',
+      handleError(error, {
+        reasoning: 'Failed to generate staking transaction',
         query: `Attempted to generate stake transaction for ${suiAmount} SUI`,
-        errors: [`Error with ID: #${errorId}: ${error.message}`],
-      },
+      }),
     ]);
   }
 }
@@ -109,18 +99,12 @@ export async function getUnstakeTransaction(
         errors: [],
       },
     ]);
-  } catch (error: any) {
-    const errorId = Math.random().toString(36).substring(2, 15);
+  } catch (error: unknown) {
     return JSON.stringify([
-      {
-        reasoning:
-          'The system encountered an issue while trying to generate the unstaking transaction.',
-        response:
-          'The attempt to generate unstaking transaction was unsuccessful.',
-        status: 'failure',
+      handleError(error, {
+        reasoning: 'Failed to generate unstaking transaction',
         query: `Attempted to generate unstake transaction for ${afSuiAmount} afSUI`,
-        errors: [`Error with ID: #${errorId}: ${error.message}`],
-      },
+      }),
     ]);
   }
 }
@@ -141,17 +125,12 @@ export async function getSuiTvl(): Promise<string> {
         errors: [],
       },
     ]);
-  } catch (error: any) {
-    const errorId = Math.random().toString(36).substring(2, 15);
+  } catch (error: unknown) {
     return JSON.stringify([
-      {
-        reasoning:
-          'The system encountered an issue while trying to retrieve TVL information.',
-        response: 'The attempt to fetch TVL was unsuccessful.',
-        status: 'failure',
+      handleError(error, {
+        reasoning: 'Failed to retrieve TVL information',
         query: 'Attempted to fetch total SUI TVL in staking',
-        errors: [`Error with ID: #${errorId}: ${error.message}`],
-      },
+      }),
     ]);
   }
 }
@@ -172,17 +151,12 @@ export async function getAfSuiExchangeRate(): Promise<string> {
         errors: [],
       },
     ]);
-  } catch (error: any) {
-    const errorId = Math.random().toString(36).substring(2, 15);
+  } catch (error: unknown) {
     return JSON.stringify([
-      {
-        reasoning:
-          'The system encountered an issue while trying to retrieve exchange rate.',
-        response: 'The attempt to fetch exchange rate was unsuccessful.',
-        status: 'failure',
+      handleError(error, {
+        reasoning: 'Failed to retrieve exchange rate',
         query: 'Attempted to fetch afSUI exchange rate',
-        errors: [`Error with ID: #${errorId}: ${error.message}`],
-      },
+      }),
     ]);
   }
 }

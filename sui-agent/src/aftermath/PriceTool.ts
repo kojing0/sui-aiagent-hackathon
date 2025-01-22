@@ -1,6 +1,7 @@
 import { Aftermath } from 'aftermath-ts-sdk';
 import axios from 'axios';
 import { COIN_ADDRESSES, COIN_SYNONYMS } from '../../@types/interface';
+import { handleError } from '../utils';
 
 const af = new Aftermath('MAINNET');
 const prices = af.Prices();
@@ -25,7 +26,13 @@ function normalizeCoinSymbol(symbol: string): string | null {
  */
 export async function getCoinPrice(coin: string): Promise<string> {
   try {
-    const response: any = await axios.get(
+    interface CoinGeckoResponse {
+      [key: string]: {
+        usd: number;
+      };
+    }
+
+    const response = await axios.get<CoinGeckoResponse>(
       `https://api.coingecko.com/api/v3/simple/price`,
       {
         params: {
@@ -37,12 +44,31 @@ export async function getCoinPrice(coin: string): Promise<string> {
 
     const price = response.data[coin]?.usd;
     if (price !== undefined) {
-      return `The current price of ${coin} is $${price}.`;
+      return JSON.stringify([
+        {
+          reasoning: 'Successfully retrieved current price from CoinGecko',
+          response: `The current price of ${coin} is $${price}`,
+          status: 'success',
+          query: `Fetched price for ${coin}`,
+          errors: [],
+        },
+      ]);
     } else {
-      return `Price information for ${coin} is not available.`;
+      return JSON.stringify([
+        handleError('Price not available', {
+          reasoning:
+            'The requested coin price was not found in the API response',
+          query: `Attempted to fetch price for ${coin}`,
+        }),
+      ]);
     }
-  } catch (error: any) {
-    return `Error fetching price for ${coin}: ${error.message}`;
+  } catch (error: unknown) {
+    return JSON.stringify([
+      handleError(error, {
+        reasoning: 'Failed to fetch price from CoinGecko API',
+        query: `Attempted to fetch price for ${coin}`,
+      }),
+    ]);
   }
 }
 
@@ -86,17 +112,12 @@ export async function coinsToPrice(coins: string): Promise<string> {
         errors: [],
       },
     ]);
-  } catch (error: any) {
-    const errorId = Math.random().toString(36).substring(2, 15);
+  } catch (error: unknown) {
     return JSON.stringify([
-      {
-        reasoning:
-          'The system encountered an issue while trying to retrieve the prices.',
-        response: 'Price fetch was unsuccessful.',
-        status: 'failure',
+      handleError(error, {
+        reasoning: 'Failed to retrieve prices from Aftermath Finance',
         query: `Attempted to fetch prices for coins: ${coins}`,
-        errors: [`Error with ID: #${errorId}: ${error.message}`],
-      },
+      }),
     ]);
   }
 }

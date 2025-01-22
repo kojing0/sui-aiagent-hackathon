@@ -1,5 +1,6 @@
 import { Aftermath } from 'aftermath-ts-sdk';
 import { PoolInfo } from '../../@types/interface';
+import { handleError } from '../utils';
 
 // Initialize Aftermath SDK for mainnet
 const af = new Aftermath('MAINNET');
@@ -35,7 +36,7 @@ async function processPool(pool: any, poolId: string): Promise<PoolInfo> {
       tvl: poolMetrics?.tvl || 0,
       apr: (poolMetrics?.apr || 0) * 100,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(`Error processing pool ${poolId}:`, error);
     return {
       id: poolId,
@@ -58,13 +59,10 @@ export async function getPool(poolId: string): Promise<string> {
     const pool = await pools.getPool({ objectId: poolId });
     if (!pool) {
       return JSON.stringify([
-        {
+        handleError('Pool not found', {
           reasoning: 'Pool not found with the specified ID.',
-          response: `No pool exists with ID: ${poolId}`,
-          status: 'failure',
           query: `Attempted to fetch pool with ID: ${poolId}`,
-          errors: [`Pool not found: ${poolId}`],
-        },
+        }),
       ]);
     }
     const processedPool = await processPool(pool, poolId);
@@ -78,17 +76,12 @@ export async function getPool(poolId: string): Promise<string> {
         errors: [],
       },
     ]);
-  } catch (error: any) {
-    const errorId = Math.random().toString(36).substring(2, 15);
+  } catch (error: unknown) {
     return JSON.stringify([
-      {
-        reasoning:
-          'The system encountered an issue while trying to retrieve the pool information.',
-        response: 'The attempt to fetch pool information was unsuccessful.',
-        status: 'failure',
+      handleError(error, {
+        reasoning: 'Failed to retrieve pool information',
         query: `Attempted to fetch pool with ID: ${poolId}`,
-        errors: [`Error with ID: #${errorId}: ${error.message}`],
-      },
+      }),
     ]);
   }
 }
@@ -121,17 +114,12 @@ export async function getAllPools(): Promise<string> {
         errors: [],
       },
     ]);
-  } catch (error: any) {
-    const errorId = Math.random().toString(36).substring(2, 15);
+  } catch (error: unknown) {
     return JSON.stringify([
-      {
-        reasoning:
-          'The system encountered an issue while trying to retrieve all pools.',
-        response: 'The attempt to fetch all pools was unsuccessful.',
-        status: 'failure',
+      handleError(error, {
+        reasoning: 'Failed to retrieve pool information',
         query: 'Attempted to fetch all available pools',
-        errors: [`Error with ID: #${errorId}: ${error.message}`],
-      },
+      }),
     ]);
   }
 }
@@ -151,7 +139,12 @@ export async function getPoolEvents(
   try {
     const pool = await pools.getPool({ objectId: poolId });
     if (!pool) {
-      throw new Error(`Pool not found: ${poolId}`);
+      return JSON.stringify([
+        handleError('Pool not found', {
+          reasoning: 'Pool not found with the specified ID.',
+          query: `Attempted to fetch ${eventType} events for pool: ${poolId}`,
+        }),
+      ]);
     }
 
     const eventData =
@@ -168,16 +161,12 @@ export async function getPoolEvents(
         errors: [],
       },
     ]);
-  } catch (error: any) {
-    const errorId = Math.random().toString(36).substring(2, 15);
+  } catch (error: unknown) {
     return JSON.stringify([
-      {
-        reasoning: `The system encountered an issue while trying to retrieve ${eventType} events.`,
-        response: 'The attempt to fetch pool events was unsuccessful.',
-        status: 'failure',
+      handleError(error, {
+        reasoning: `Failed to retrieve ${eventType} events`,
         query: `Attempted to fetch ${eventType} events for pool: ${poolId}`,
-        errors: [`Error with ID: #${errorId}: ${error.message}`],
-      },
+      }),
     ]);
   }
 }
@@ -292,17 +281,12 @@ export async function getRankedPools(
         errors: [],
       },
     ]);
-  } catch (error: any) {
-    const errorId = Math.random().toString(36).substring(2, 15);
+  } catch (error: unknown) {
     return JSON.stringify([
-      {
-        reasoning:
-          'The system encountered an issue while trying to retrieve ranked pools.',
-        response: 'The attempt to fetch ranked pools was unsuccessful.',
-        status: 'failure',
+      handleError(error, {
+        reasoning: 'Failed to retrieve ranked pools',
         query: `Attempted to fetch top ${limit} pools ranked by ${metric}`,
-        errors: [`Error with ID: #${errorId}: ${error.message}`],
-      },
+      }),
     ]);
   }
 }
@@ -388,17 +372,12 @@ export async function getFilteredPools(
         errors: [],
       },
     ]);
-  } catch (error: any) {
-    const errorId = Math.random().toString(36).substring(2, 15);
+  } catch (error: unknown) {
     return JSON.stringify([
-      {
-        reasoning:
-          'The system encountered an issue while trying to retrieve filtered pools.',
-        response: 'The attempt to fetch filtered pools was unsuccessful.',
-        status: 'failure',
+      handleError(error, {
+        reasoning: 'Failed to retrieve filtered pools',
         query: 'Attempted to fetch filtered pools',
-        errors: [`Error with ID: #${errorId}: ${error.message}`],
-      },
+      }),
     ]);
   }
 }

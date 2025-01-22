@@ -1,4 +1,5 @@
 import { Aftermath } from 'aftermath-ts-sdk';
+import { handleError } from '../utils';
 
 // Initialize Aftermath SDK for mainnet
 const af = new Aftermath('MAINNET');
@@ -61,7 +62,12 @@ export async function getPoolSpotPrice(
     // Fetch pool and validate tokens
     const pool = await pools.getPool({ objectId: poolId });
     if (!pool) {
-      throw new Error(`Pool not found: ${poolId}`);
+      return JSON.stringify([
+        handleError('Pool not found', {
+          reasoning: 'Pool not found with the specified ID.',
+          query: `Attempted to calculate spot price for ${coinInType} to ${coinOutType} in pool ${poolId}`,
+        }),
+      ]);
     }
 
     const { matchedCoinIn, matchedCoinOut } = await findTokensInPool(
@@ -92,17 +98,12 @@ export async function getPoolSpotPrice(
         errors: [],
       },
     ]);
-  } catch (error: any) {
-    const errorId = Math.random().toString(36).substring(2, 15);
+  } catch (error: unknown) {
     return JSON.stringify([
-      {
-        reasoning:
-          'The system encountered an issue while trying to calculate the spot price.',
-        response: 'The attempt to calculate spot price was unsuccessful.',
-        status: 'failure',
+      handleError(error, {
+        reasoning: 'Failed to calculate spot price',
         query: `Attempted to calculate spot price for ${coinInType} to ${coinOutType} in pool ${poolId}`,
-        errors: [`Error with ID: #${errorId}: ${error.message}`],
-      },
+      }),
     ]);
   }
 }
@@ -127,7 +128,12 @@ export async function getTradeAmountOut(
     // Fetch pool and validate tokens
     const pool = await pools.getPool({ objectId: poolId });
     if (!pool) {
-      throw new Error(`Pool not found: ${poolId}`);
+      return JSON.stringify([
+        handleError('Pool not found', {
+          reasoning: 'Pool not found with the specified ID.',
+          query: `Attempted to calculate output for ${coinInAmount} ${coinInType} to ${coinOutType}`,
+        }),
+      ]);
     }
 
     const { matchedCoinIn, matchedCoinOut } = await findTokensInPool(
@@ -159,18 +165,12 @@ export async function getTradeAmountOut(
         errors: [],
       },
     ]);
-  } catch (error: any) {
-    const errorId = Math.random().toString(36).substring(2, 15);
+  } catch (error: unknown) {
     return JSON.stringify([
-      {
-        reasoning:
-          'The system encountered an issue while trying to calculate the trade output amount.',
-        response:
-          'The attempt to calculate trade output amount was unsuccessful.',
-        status: 'failure',
+      handleError(error, {
+        reasoning: 'Failed to calculate trade output amount',
         query: `Attempted to calculate output for ${coinInAmount} ${coinInType} to ${coinOutType}`,
-        errors: [`Error with ID: #${errorId}: ${error.message}`],
-      },
+      }),
     ]);
   }
 }
@@ -231,17 +231,12 @@ export async function getTradeRoute(
         errors: [],
       },
     ]);
-  } catch (error: any) {
-    const errorId = Math.random().toString(36).substring(2, 15);
+  } catch (error: unknown) {
     return JSON.stringify([
-      {
-        reasoning:
-          'The system encountered an issue while trying to find a trade route.',
-        response: 'The attempt to find a trade route was unsuccessful.',
-        status: 'failure',
+      handleError(error, {
+        reasoning: 'Failed to find trade route',
         query: `Attempted to find trade route for ${coinInAmount} ${coinInType} to ${coinOutType}`,
-        errors: [`Error with ID: #${errorId}: ${error.message}`],
-      },
+      }),
     ]);
   }
 }
@@ -266,7 +261,12 @@ export async function getDepositTransaction(
     // Validate pool exists
     const pool = await pools.getPool({ objectId: poolId });
     if (!pool) {
-      throw new Error(`Pool not found: ${poolId}`);
+      return JSON.stringify([
+        handleError('Pool not found', {
+          reasoning: 'Pool not found with the specified ID.',
+          query: `Attempted to generate deposit transaction for pool ${poolId}`,
+        }),
+      ]);
     }
 
     // Convert token symbols to full addresses
@@ -279,11 +279,12 @@ export async function getDepositTransaction(
         t.toLowerCase().includes(token.toLowerCase()),
       );
       if (!matchedToken) {
-        throw new Error(
-          `Token ${token} not found in pool. Available tokens: ${availableTokens.join(
-            ', ',
-          )}`,
-        );
+        return JSON.stringify([
+          handleError('Token not found', {
+            reasoning: `Token ${token} not found in pool`,
+            query: `Attempted to find token ${token} in pool ${poolId}`,
+          }),
+        ]);
       }
       convertedAmountsIn[matchedToken] = amount;
     }
@@ -312,18 +313,12 @@ export async function getDepositTransaction(
         errors: [],
       },
     ]);
-  } catch (error: any) {
-    const errorId = Math.random().toString(36).substring(2, 15);
+  } catch (error: unknown) {
     return JSON.stringify([
-      {
-        reasoning:
-          'The system encountered an issue while trying to generate the deposit transaction.',
-        response:
-          'The attempt to generate deposit transaction was unsuccessful.',
-        status: 'failure',
+      handleError(error, {
+        reasoning: 'Failed to generate deposit transaction',
         query: `Attempted to generate deposit transaction for pool ${poolId}`,
-        errors: [`Error with ID: #${errorId}: ${error.message}`],
-      },
+      }),
     ]);
   }
 }
@@ -350,7 +345,12 @@ export async function getWithdrawTransaction(
     // Validate pool exists
     const pool = await pools.getPool({ objectId: poolId });
     if (!pool) {
-      throw new Error(`Pool not found: ${poolId}`);
+      return JSON.stringify([
+        handleError('Pool not found', {
+          reasoning: 'Pool not found with the specified ID.',
+          query: `Attempted to generate withdraw transaction for pool ${poolId}`,
+        }),
+      ]);
     }
 
     // Convert token symbols to full addresses
@@ -363,11 +363,12 @@ export async function getWithdrawTransaction(
         t.toLowerCase().includes(token.toLowerCase()),
       );
       if (!matchedToken) {
-        throw new Error(
-          `Token ${token} not found in pool. Available tokens: ${availableTokens.join(
-            ', ',
-          )}`,
-        );
+        return JSON.stringify([
+          handleError('Token not found', {
+            reasoning: `Token ${token} not found in pool`,
+            query: `Attempted to find token ${token} in pool ${poolId}`,
+          }),
+        ]);
       }
       convertedAmountsOut[matchedToken] = amount;
     }
@@ -397,18 +398,12 @@ export async function getWithdrawTransaction(
         errors: [],
       },
     ]);
-  } catch (error: any) {
-    const errorId = Math.random().toString(36).substring(2, 15);
+  } catch (error: unknown) {
     return JSON.stringify([
-      {
-        reasoning:
-          'The system encountered an issue while trying to generate the withdraw transaction.',
-        response:
-          'The attempt to generate withdraw transaction was unsuccessful.',
-        status: 'failure',
+      handleError(error, {
+        reasoning: 'Failed to generate withdraw transaction',
         query: `Attempted to generate withdraw transaction for pool ${poolId}`,
-        errors: [`Error with ID: #${errorId}: ${error.message}`],
-      },
+      }),
     ]);
   }
 }

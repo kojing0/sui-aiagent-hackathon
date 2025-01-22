@@ -1,4 +1,5 @@
 import { Aftermath } from 'aftermath-ts-sdk';
+import { handleError } from '../utils';
 
 /**
  * Singleton class for managing Aftermath SDK interactions for APR calculations.
@@ -28,22 +29,33 @@ class AftermathTool {
    * Fetches APR (Annual Percentage Rate) information for a specific token.
    *
    * @param {string} tokenAddress - The blockchain address of the token to get APR for
-   * @returns {Promise<any>} A promise that resolves to the APR information for the token
-   *                         or an error message if the request fails
-   * @throws {Error} If the Aftermath SDK call fails, returns error message as string
+   * @returns {Promise<string>} A promise that resolves to a JSON string containing APR information
    *
    * @example
    * ```typescript
    * const apr = await AftermathTool.getTokenAPR("0x123...abc");
    * ```
    */
-  static async getTokenAPR(tokenAddress: string): Promise<any> {
+  static async getTokenAPR(tokenAddress: string): Promise<string> {
     try {
       const aftermath = this.getInstance();
       const apr = await aftermath.Prices();
-      return apr;
-    } catch (error: any) {
-      return `Error fetching APR: ${error.message}`;
+      return JSON.stringify([
+        {
+          reasoning: 'Successfully retrieved APR information.',
+          response: JSON.stringify(apr, null, 2),
+          status: 'success',
+          query: `Fetched APR for token: ${tokenAddress}`,
+          errors: [],
+        },
+      ]);
+    } catch (error: unknown) {
+      return JSON.stringify([
+        handleError(error, {
+          reasoning: 'Failed to retrieve APR information',
+          query: `Attempted to fetch APR for token: ${tokenAddress}`,
+        }),
+      ]);
     }
   }
 }
