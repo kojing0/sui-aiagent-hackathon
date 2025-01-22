@@ -228,7 +228,7 @@ npm run dev
 
 ## License
 
-MIT License - feel free to use this code in your own projects.
+Apache License 2.0. See [LICENSE](../LICENSE) for details.
 
 ```
 
