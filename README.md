@@ -112,7 +112,7 @@ tools.registerTool(
 
 ```
 atoma-agents/
-└── suiagent/
+└── sui-agent/
     ├── types/            # TypeScript type definitions
     └── src/
         ├── app.ts        # Main application entry point
@@ -128,7 +128,6 @@ atoma-agents/
 ```
 
 ## Contributing
-
 We welcome contributions! Please see our [Contribution Guide](CONTRIBUTING.md) for details.
 
 ## License
