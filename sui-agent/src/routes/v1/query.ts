@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { Request, Response } from 'express';
-import Agents from '../../agents/Agent';
+import Agents from '../../agents/SuiAgent';
 
 /**
  * Express Router for handling AI agent queries
