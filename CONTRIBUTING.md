@@ -6,7 +6,6 @@ We love your input! We want to make contributing to Atoma Agents as easy and tra
 - Discussing the current state of the code
 - Submitting a fix
 - Proposing new features
-- Becoming a maintainer
 
 ## Development Process
 
