@@ -20,52 +20,42 @@ function normalizeCoinSymbol(symbol: string): string | null {
 }
 
 /**
- * Fetches current price for a single coin from CoinGecko
- * @param coin - Coin identifier (e.g., "bitcoin", "ethereum")
+ * Fetches current price for a single coin from Aftermath Finance
+ * @param coin - Coin symbol or address
  * @returns Formatted price string or error message
  */
 export async function getCoinPrice(coin: string): Promise<string> {
   try {
-    interface CoinGeckoResponse {
-      [key: string]: {
-        usd: number;
-      };
+    // Handle direct addresses vs symbols
+    let coinType = coin;
+    if (!coin.includes('::')) {
+      const normalizedSymbol = normalizeCoinSymbol(coin);
+      if (!normalizedSymbol) {
+        throw new Error(`Unknown coin symbol: ${coin}`);
+      }
+      coinType =
+        COIN_ADDRESSES[normalizedSymbol as keyof typeof COIN_ADDRESSES];
+      if (!coinType) {
+        throw new Error(`No address mapping for coin: ${coin}`);
+      }
     }
 
-    const response = await axios.get<CoinGeckoResponse>(
-      `https://api.coingecko.com/api/v3/simple/price`,
+    const price = await prices.getCoinPrice({ coin: coinType });
+
+    return JSON.stringify([
       {
-        params: {
-          ids: coin,
-          vs_currencies: 'usd',
-        },
+        reasoning:
+          'Successfully retrieved current price from Aftermath Finance',
+        response: `The current price of ${coin} is $${price}`,
+        status: 'success',
+        query: `Fetched price for ${coin}`,
+        errors: [],
       },
-    );
-
-    const price = response.data[coin]?.usd;
-    if (price !== undefined) {
-      return JSON.stringify([
-        {
-          reasoning: 'Successfully retrieved current price from CoinGecko',
-          response: `The current price of ${coin} is $${price}`,
-          status: 'success',
-          query: `Fetched price for ${coin}`,
-          errors: [],
-        },
-      ]);
-    } else {
-      return JSON.stringify([
-        handleError('Price not available', {
-          reasoning:
-            'The requested coin price was not found in the API response',
-          query: `Attempted to fetch price for ${coin}`,
-        }),
-      ]);
-    }
+    ]);
   } catch (error: unknown) {
     return JSON.stringify([
       handleError(error, {
-        reasoning: 'Failed to fetch price from CoinGecko API',
+        reasoning: 'Failed to fetch price from Aftermath Finance',
         query: `Attempted to fetch price for ${coin}`,
       }),
     ]);
