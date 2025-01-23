@@ -118,6 +118,57 @@ curl -X POST http://localhost:2512/query \
   -d '{"prompt": "show me the top 5 pools by APR"}'
 ```
 
+### Deposit into Top Pools
+
+```bash
+# Deposit into top APR pools
+curl -X POST http://localhost:2512/query \
+  -H "Content-Type: application/json" \
+  -d '{"prompt": "deposit 1 SUI into each of the top 5 pools by APR with 1% slippage from my wallet 0x123..."}'
+
+# Deposit into top TVL pools
+curl -X POST http://localhost:2512/query \
+  -H "Content-Type: application/json" \
+  -d '{"prompt": "find the top 3 pools by TVL and deposit 0.5 SUI into each from wallet 0x123... with 0.5% slippage"}'
+
+# Deposit into top fee-generating pools
+curl -X POST http://localhost:2512/query \
+  -H "Content-Type: application/json" \
+  -d '{"prompt": "deposit 2 SUI each into the top 10 pools by fees from my wallet 0x123... using 1% slippage"}'
+```
+
+### Withdraw from Pools
+
+```bash
+curl -X POST http://localhost:2512/query \
+  -H "Content-Type: application/json" \
+  -d '{"prompt": "withdraw 1000000 LP tokens from pool 0xabc... using wallet 0x123... with 0.5% slippage"}'
+```
+
+### Staking Operations
+
+```bash
+# Get staking positions
+curl -X POST http://localhost:2512/query \
+  -H "Content-Type: application/json" \
+  -d '{"prompt": "show me the staking positions for wallet 0x123..."}'
+
+# Get total SUI TVL in staking
+curl -X POST http://localhost:2512/query \
+  -H "Content-Type: application/json" \
+  -d '{"prompt": "what is the total SUI TVL in staking?"}'
+
+# Get afSUI exchange rate
+curl -X POST http://localhost:2512/query \
+  -H "Content-Type: application/json" \
+  -d '{"prompt": "what is the current afSUI to SUI exchange rate?"}'
+
+# Create staking transaction
+curl -X POST http://localhost:2512/query \
+  -H "Content-Type: application/json" \
+  -d '{"prompt": "stake 100 SUI from wallet 0x123... with validator 0xabc..."}'
+```
+
 ### Transfer Tokens
 
 ```bash
@@ -229,5 +280,7 @@ npm run dev
 ## License
 
 Apache License 2.0. See [LICENSE](../LICENSE) for details.
+
+```
 
 ```
