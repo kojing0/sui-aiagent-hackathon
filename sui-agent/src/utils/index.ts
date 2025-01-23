@@ -2,6 +2,7 @@ import final_answer_agent_prompt from '../prompts/final_answer_agent';
 import { atomaChat } from '../config/atoma';
 import Tools from '../aftermath';
 import { IntentAgentResponse } from '../../@types/interface';
+import { randomUUID } from 'crypto';
 
 /**
  * Utility class for processing agent responses and making decisions
@@ -85,14 +86,62 @@ class Utils {
       const toolArgs = args || [];
       const result = await tool.process(...toolArgs);
       return await this.finalAnswer(result, '', selected_tool);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error executing tool:', error);
-      return {
-        status: 'error',
-        message: `Error executing ${selected_tool}: ${error.message}`,
-      };
+      return handleError(error, {
+        reasoning: `The system encountered an issue while executing the tool ${selected_tool}`,
+        query: `Attempted to execute ${selected_tool} with arguments: ${JSON.stringify(args)}`,
+      });
     }
   }
 }
 
 export default Utils;
+
+/**
+ * Define custom error type for structured error responses
+ */
+export type StructuredError = {
+  reasoning: string;
+  response: string;
+  status: 'failure';
+  query: string;
+  errors: string[];
+};
+
+/**
+ * Type guard for Error objects
+ */
+export function isError(error: unknown): error is Error {
+  return error instanceof Error;
+}
+
+/**
+ * Generic error handler that creates a structured error response
+ */
+export function handleError(
+  error: unknown,
+  context: {
+    reasoning: string;
+    query: string;
+  },
+): StructuredError {
+  const errorId = randomUUID();
+
+  let errorMessage: string;
+  if (isError(error)) {
+    errorMessage = error.message;
+  } else if (typeof error === 'string') {
+    errorMessage = error;
+  } else {
+    errorMessage = 'Unknown error occurred';
+  }
+
+  return {
+    reasoning: context.reasoning,
+    response: 'Operation unsuccessful',
+    status: 'failure',
+    query: context.query,
+    errors: [`Error ID: ${errorId} - ${errorMessage}`],
+  };
+}

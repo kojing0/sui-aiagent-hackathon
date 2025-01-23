@@ -28,7 +28,7 @@ Our goal is to create a full-fledged agent system using the Atoma's distributed 
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/atoma-agents.git
+git clone https://github.com/atoma-network/atoma-agents.git
 
 # Install dependencies
 cd atoma-agents
@@ -112,21 +112,24 @@ tools.registerTool(
 
 ```
 atoma-agents/
-├── src/
-│   ├── aftermath/        # Aftermath Finance protocol integration
-│   ├── agents/          # AI agent implementation
-│   ├── config/          # Configuration files
-│   ├── prompts/         # AI prompt templates
-│   ├── routes/          # API routes
-│   ├── tools/           # Tool registry and management
-│   └── utils/           # Utility functions
-├── @types/             # TypeScript type definitions
-└── tests/              # Test files
+└── sui-agent/
+    ├── types/            # TypeScript type definitions
+    └── src/
+        ├── app.ts        # Main application entry point
+        ├── server.ts     # Server configuration
+        ├── aftermath/    # Aftermath Finance protocol integration
+        ├── agents/       # AI agent implementation
+        ├── config/       # Configuration files
+        ├── prompts/      # AI prompt templates
+        ├── routes/
+        │   └── v1/      # API route handlers
+        ├── transactions/ # Transaction handling
+        └── utils/        # Utility functions
 ```
 
 ## Contributing
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+We welcome contributions! Please see our [Contribution Guide](CONTRIBUTING.md) for details.
 
 ## License
 

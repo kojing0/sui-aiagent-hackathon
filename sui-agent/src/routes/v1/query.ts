@@ -1,6 +1,7 @@
 import { Router } from 'express';
-import { Request, Response } from 'express';
+import { Request, Response, RequestHandler } from 'express';
 import Agents from '../../agents/SuiAgent';
+import { handleError } from '../../utils';
 
 /**
  * Express Router for handling AI agent queries
@@ -18,12 +19,32 @@ const agent = new Agents();
  * @returns {Promise<Response>} JSON response containing the agent's processed output
  * @throws {Error} If the agent processing fails
  */
-queryRouter.post('/query', async (req: Request, res: Response) => {
-  const { prompt } = req.body;
-  const agentResponse = await agent.SuperVisorAgent(prompt);
-  console.log(agentResponse, 'wow');
-  res.json(agentResponse);
-});
+const handleQuery: RequestHandler = async (req, res) => {
+  try {
+    const { prompt } = req.body;
+    if (!prompt) {
+      res.status(400).json([
+        handleError('No prompt provided', {
+          reasoning: 'The request body is missing the required prompt field.',
+          query: 'Attempted to process empty prompt',
+        }),
+      ]);
+      return;
+    }
+    const agentResponse = await agent.SuperVisorAgent(prompt);
+    console.log(agentResponse, 'wow');
+    res.json(agentResponse);
+  } catch (error: unknown) {
+    res.status(500).json([
+      handleError(error, {
+        reasoning: 'Failed to process agent query',
+        query: `Attempted to process prompt: ${req.body.prompt || 'unknown'}`,
+      }),
+    ]);
+  }
+};
+
+queryRouter.post('/query', handleQuery);
 
 /**
  * Middleware to handle unsupported HTTP methods
@@ -31,8 +52,16 @@ queryRouter.post('/query', async (req: Request, res: Response) => {
  * @route ALL /*
  * @returns {Response} 405 status with error message
  */
-queryRouter.use((r: any, res: any) => {
-  return res.status(405).json({ err: 'method not allowed' });
-});
+const handleUnsupportedMethod: RequestHandler = (req, res) => {
+  res.status(405).json([
+    handleError('Method not allowed', {
+      reasoning:
+        'The requested HTTP method is not supported for this endpoint.',
+      query: `${req.method} ${req.path}`,
+    }),
+  ]);
+};
+
+queryRouter.use(handleUnsupportedMethod);
 
 export default queryRouter;
