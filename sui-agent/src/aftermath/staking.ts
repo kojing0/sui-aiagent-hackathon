@@ -1,9 +1,28 @@
 import { Aftermath } from 'aftermath-ts-sdk';
+import { SuiClient, SuiHTTPTransport } from '@mysten/sui.js/client';
 import { handleError } from '../utils';
+import { NETWORK_CONFIG } from '../../@types/interface';
 
-// Initialize Aftermath SDK for mainnet
-const af = new Aftermath('MAINNET');
-const staking = af.Staking();
+// Initialize Sui client
+const suiClient = new SuiClient({
+  transport: new SuiHTTPTransport({
+    url: NETWORK_CONFIG.MAINNET.fullnode,
+  }),
+});
+
+// Initialize Aftermath SDK
+const afSdk = new Aftermath('MAINNET');
+
+// Initialize the SDK and create staking provider
+let stakingApi: Awaited<ReturnType<typeof afSdk.Staking>> | null = null;
+
+async function initializeStakingApi() {
+  if (!stakingApi) {
+    await afSdk.init(); // Initialize provider
+    stakingApi = afSdk.Staking();
+  }
+  return stakingApi;
+}
 
 /**
  * Gets user's staking positions
@@ -14,12 +33,21 @@ export async function getStakingPositions(
   walletAddress: string,
 ): Promise<string> {
   try {
+    const staking = await initializeStakingApi();
     const positions = await staking.getStakingPositions({ walletAddress });
     return JSON.stringify([
       {
         reasoning:
           'Successfully retrieved staking positions from Aftermath Finance.',
-        response: JSON.stringify(positions, null, 2),
+        response: JSON.stringify(
+          {
+            walletAddress,
+            positions,
+            timestamp: new Date().toISOString(),
+          },
+          null,
+          2,
+        ),
         status: 'success',
         query: `Fetched staking positions for wallet: ${walletAddress}`,
         errors: [],
@@ -48,15 +76,28 @@ export async function getStakeTransaction(
   validatorAddress: string,
 ): Promise<string> {
   try {
+    const staking = await initializeStakingApi();
     const tx = await staking.getStakeTransaction({
       walletAddress,
       suiStakeAmount: suiAmount,
       validatorAddress,
     });
+
     return JSON.stringify([
       {
         reasoning: 'Successfully generated staking transaction.',
-        response: JSON.stringify(tx, null, 2),
+        response: JSON.stringify(
+          {
+            transaction: tx,
+            details: {
+              walletAddress,
+              suiAmount: suiAmount.toString(),
+              validatorAddress,
+            },
+          },
+          null,
+          2,
+        ),
         status: 'success',
         query: `Generated stake transaction for ${suiAmount} SUI with validator ${validatorAddress}`,
         errors: [],
@@ -85,15 +126,28 @@ export async function getUnstakeTransaction(
   isAtomic = true,
 ): Promise<string> {
   try {
+    const staking = await initializeStakingApi();
     const tx = await staking.getUnstakeTransaction({
       walletAddress,
       afSuiUnstakeAmount: afSuiAmount,
       isAtomic,
     });
+
     return JSON.stringify([
       {
         reasoning: 'Successfully generated unstaking transaction.',
-        response: JSON.stringify(tx, null, 2),
+        response: JSON.stringify(
+          {
+            transaction: tx,
+            details: {
+              walletAddress,
+              afSuiAmount: afSuiAmount.toString(),
+              isAtomic,
+            },
+          },
+          null,
+          2,
+        ),
         status: 'success',
         query: `Generated unstake transaction for ${afSuiAmount} afSUI`,
         errors: [],
@@ -115,11 +169,19 @@ export async function getUnstakeTransaction(
  */
 export async function getSuiTvl(): Promise<string> {
   try {
+    const staking = await initializeStakingApi();
     const tvl = await staking.getSuiTvl();
     return JSON.stringify([
       {
         reasoning: 'Successfully retrieved SUI TVL information.',
-        response: tvl.toString(),
+        response: JSON.stringify(
+          {
+            tvl: tvl.toString(),
+            timestamp: new Date().toISOString(),
+          },
+          null,
+          2,
+        ),
         status: 'success',
         query: 'Fetched total SUI TVL in staking',
         errors: [],
@@ -136,18 +198,26 @@ export async function getSuiTvl(): Promise<string> {
 }
 
 /**
- * Gets current afSUI exchange rate
+ * Gets afSUI to SUI exchange rate
  * @returns JSON string containing exchange rate information
  */
 export async function getAfSuiExchangeRate(): Promise<string> {
   try {
+    const staking = await initializeStakingApi();
     const rate = await staking.getAfSuiToSuiExchangeRate();
     return JSON.stringify([
       {
-        reasoning: 'Successfully retrieved afSUI exchange rate.',
-        response: rate.toString(),
+        reasoning: 'Successfully retrieved afSUI to SUI exchange rate.',
+        response: JSON.stringify(
+          {
+            rate: rate.toString(),
+            timestamp: new Date().toISOString(),
+          },
+          null,
+          2,
+        ),
         status: 'success',
-        query: 'Fetched current afSUI to SUI exchange rate',
+        query: 'Fetched afSUI to SUI exchange rate',
         errors: [],
       },
     ]);
@@ -155,7 +225,7 @@ export async function getAfSuiExchangeRate(): Promise<string> {
     return JSON.stringify([
       handleError(error, {
         reasoning: 'Failed to retrieve exchange rate',
-        query: 'Attempted to fetch afSUI exchange rate',
+        query: 'Attempted to fetch afSUI to SUI exchange rate',
       }),
     ]);
   }

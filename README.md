@@ -75,6 +75,11 @@ Here are some example prompts you can try:
 - "Send 1 SUI to [wallet_address]"
 - "What's the APR for [token_address]?"
 - "Show me pools with minimum TVL of $100,000"
+- "Deposit 1 SUI into each of the top 5 pools by APR from my wallet [address]"
+- "Find the top 3 pools by TVL and deposit 0.5 SUI into each with 0.5% slippage"
+- "Deposit 2 SUI each into the top 10 pools by fees using 1% slippage"
+- "Withdraw 1000000 LP tokens from pool [pool_id] with 0.5% slippage"
+- "Show me the top pools by APR and help me deposit into them"
 
 ## Adding New Protocols
 
