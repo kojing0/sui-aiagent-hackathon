@@ -1,6 +1,6 @@
-# Atoma Agents
+# Atoma Sage
 
-Built on the Sui blockchain and powered by Atoma Network's AI Infrastructure, Atoma agents are sets of extensible Intelligent Layer system for blockchain operations. This project aims to provide a comprehensive solution for interacting with various blockchain protocols through natural language processing.
+Built on the Sui blockchain and powered by Atoma Network's AI Infrastructure, AtomaSage are sets of extensible Intelligent Layer system for blockchain operations. This project aims to provide a comprehensive solution for interacting with various blockchain protocols through natural language processing.
 
 ## Vision
 
@@ -122,7 +122,8 @@ atoma-agents/
     └── src/
         ├── app.ts        # Main application entry point
         ├── server.ts     # Server configuration
-        ├── aftermath/    # Aftermath Finance protocol integration
+        ├── tools/        # Tool registry
+        |   └── aftermath/    # Aftermath Finance protocol integration
         ├── agents/       # AI agent implementation
         ├── config/       # Configuration files
         ├── prompts/      # AI prompt templates
@@ -146,7 +147,7 @@ For support, please open an issue in the GitHub repository or contact the mainta
 
 ## Roadmap
 
-- [ ] Add support for more Sui protocols like Navi, Cetus, BlueFin, AlphaFi etc.
+- [ ] Add support for more Sui protocols like Suilend, Navi, Cetus, BlueFin, AlphaFi etc.
 - [ ] Allow the prompt to sequentially compose multiple tools
 - [ ] Implement cross-chain operations
 - [ ] Add more complex transaction types
