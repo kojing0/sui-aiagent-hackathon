@@ -162,9 +162,9 @@ atoma-agents/
 ├── packages/
     ├── sui-agent/
         ├── src/
-            ├── @types/            # TypeScript type definitions
-            ├── agents/           # AI agent implementation
-            ├── config/           # Configuration files
+            ├── @types/       # TypeScript type definitions
+            ├── agents/       # AI agent implementation
+            ├── config/       # Configuration files
             ├── prompts/      # AI prompt templates
             ├── tools/        # Tool registry
             ├── transactions/ # Transaction handling
