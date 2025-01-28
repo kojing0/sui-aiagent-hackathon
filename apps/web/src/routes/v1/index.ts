@@ -1,6 +1,6 @@
-import { Router } from 'express';
-import queryRouter from './query';
-import rootRouter from './root';
+import { Router } from "express";
+import queryRouter from "./query";
+import rootRouter from "./root";
 
 /**
  * Router instance for v1 API endpoints
@@ -21,7 +21,7 @@ const v1Router: Router = Router();
  *   - GET /query/* - Various blockchain data queries
  *   - POST /query/batch - Batch query operations
  */
-v1Router.use('/', rootRouter); // Handles basic and health check routes
-v1Router.use('/query', queryRouter); // Handles query operations
+v1Router.use("/", rootRouter); // Handles basic and health check routes
+v1Router.use("/query", queryRouter); // Handles query operations
 
 export default v1Router;

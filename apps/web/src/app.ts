@@ -1,6 +1,6 @@
-import express, { Application } from 'express';
-import cors from 'cors';
-import v1routes from './routes/v1';
+import express, { Application } from "express";
+import cors from "cors";
+import v1routes from "./routes/v1";
 
 /**
  * Express application instance.
@@ -32,4 +32,4 @@ app.use(v1routes);
  * @type {Application}
  * @description Express application instance configured with middleware and routes
  */
-export default app; 
+export default app;
