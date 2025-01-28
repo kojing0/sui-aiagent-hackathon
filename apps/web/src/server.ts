@@ -1,6 +1,6 @@
-import http from "http";
-import app from "./app";
-import { config } from "./config";
+import http from 'http';
+import app from './app';
+import { config } from './config';
 
 /**
  * Main application class that initializes and starts the server
@@ -24,16 +24,16 @@ class Main {
 
     // Graceful shutdown handler
     const shutdown = () => {
-      console.log("Shutting down gracefully...");
+      console.log('Shutting down gracefully...');
       server.close(() => {
-        console.log("Server closed");
+        console.log('Server closed');
         process.exit(0);
       });
     };
 
     // Handle shutdown signals
-    process.on("SIGTERM", shutdown);
-    process.on("SIGINT", shutdown);
+    process.on('SIGTERM', shutdown);
+    process.on('SIGINT', shutdown);
 
     server.listen(this.port, () => {
       console.log(`Server is listening on port ${this.port}`);
@@ -44,6 +44,6 @@ class Main {
 // Create and start the application
 const main = new Main(config.port);
 main.start().catch((error) => {
-  console.error("Failed to start server:", error);
+  console.error('Failed to start server:', error);
   process.exit(1);
 });

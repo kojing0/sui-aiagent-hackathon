@@ -99,17 +99,17 @@ export async function yourToolFunction(param1: string): Promise<string> {
 
 // In ToolRegistry.ts
 tools.registerTool(
-  "your_tool_name",
-  "Description of what your tool does",
+  'your_tool_name',
+  'Description of what your tool does',
   [
     {
-      name: "param1",
-      type: "string",
-      description: "Description of the parameter",
-      required: true,
-    },
+      name: 'param1',
+      type: 'string',
+      description: 'Description of the parameter',
+      required: true
+    }
   ],
-  yourToolFunction,
+  yourToolFunction
 );
 ```
 
