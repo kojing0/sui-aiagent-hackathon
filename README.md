@@ -161,19 +161,14 @@ atoma-agents/
     ├── web/
 ├── packages/
     ├── sui-agent/
-        ├── types/            # TypeScript type definitions
-        └── src/
-            ├── app.ts        # Main application entry point
-        ├── server.ts     # Server configuration
-        ├── tools/        # Tool registry
-        |   └── aftermath/    # Aftermath Finance protocol integration
-        ├── agents/       # AI agent implementation
-        ├── config/       # Configuration files
-        ├── prompts/      # AI prompt templates
-        ├── routes/
-        │   └── v1/      # API route handlers
-        ├── transactions/ # Transaction handling
-        └── utils/        # Utility functions
+        ├── src/
+            ├── @types/            # TypeScript type definitions
+            ├── agents/           # AI agent implementation
+            ├── config/           # Configuration files
+            ├── prompts/      # AI prompt templates
+            ├── tools/        # Tool registry
+            ├── transactions/ # Transaction handling
+            └── utils/        # Utility functions
 ```
 
 ## Contributing
