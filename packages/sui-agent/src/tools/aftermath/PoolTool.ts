@@ -1,4 +1,4 @@
-import { Aftermath } from 'aftermath-ts-sdk';
+import { Aftermath, Pool } from 'aftermath-ts-sdk';
 import { PoolInfo } from '../../@types/interface';
 import { handleError } from '../../utils';
 
@@ -6,17 +6,13 @@ import { handleError } from '../../utils';
 const af = new Aftermath('MAINNET');
 const pools = af.Pools();
 
-// Type definitions for pool operations
-type RankingMetric = 'apr' | 'tvl' | 'fees' | 'volume';
-type SortOrder = 'asc' | 'desc';
-
 /**
  * Processes raw pool data into standardized format
  * @param pool - Raw pool data from Aftermath
  * @param poolId - Unique identifier for the pool
  * @returns Standardized pool information
  */
-async function processPool(pool: any, poolId: string): Promise<PoolInfo> {
+async function processPool(pool: Pool, poolId: string): Promise<PoolInfo> {
   try {
     const metrics = await pools.getPoolsStats({ poolIds: [poolId] });
     const poolMetrics = metrics[0];
@@ -54,7 +50,10 @@ async function processPool(pool: any, poolId: string): Promise<PoolInfo> {
  * @param poolId - Unique identifier for the pool
  * @returns JSON string containing pool details or error information
  */
-export async function getPool(poolId: string): Promise<string> {
+export async function getPool(
+  ...args: (string | number | bigint | boolean)[]
+): Promise<string> {
+  const poolId = args[0] as string;
   try {
     const pool = await pools.getPool({ objectId: poolId });
     if (!pool) {
@@ -132,10 +131,9 @@ export async function getAllPools(): Promise<string> {
  * @returns JSON string containing event information
  */
 export async function getPoolEvents(
-  poolId: string,
-  eventType: 'deposit' | 'withdraw',
-  limit = 10,
+  ...args: (string | number | bigint | boolean)[]
 ): Promise<string> {
+  const [poolId, eventType, limit] = args as [string, string, number];
   try {
     const pool = await pools.getPool({ objectId: poolId });
     if (!pool) {
@@ -172,29 +170,6 @@ export async function getPoolEvents(
 }
 
 /**
- * Calculates pool APR based on volume and TVL
- * @param pool - Pool data containing volume and TVL information
- * @returns Calculated APR as a percentage
- */
-export function calculatePoolApr(pool: any): number {
-  try {
-    // Convert values from base units
-    const volume24h = Number(pool.pool.volume24h || 0) / 1e9;
-    const tvl = Number(pool.pool.lpCoinSupply || 0) / 1e9;
-    if (tvl === 0) return 0;
-
-    // Calculate annual revenue and APR
-    const feeRate = Number(pool.pool.flatness || 0) / 1e9;
-    const feeRevenue24h = volume24h * feeRate;
-    const annualRevenue = feeRevenue24h * 365;
-    return (annualRevenue / tvl) * 100;
-  } catch (error) {
-    console.error('Error calculating pool APR:', error);
-    return 0;
-  }
-}
-
-/**
  * Gets ranked pools by specified metric
  * @param metric - Metric to rank by (apr, tvl, fees, volume)
  * @param limit - Maximum number of pools to return
@@ -202,10 +177,9 @@ export function calculatePoolApr(pool: any): number {
  * @returns JSON string containing ranked pool information
  */
 export async function getRankedPools(
-  metric: RankingMetric = 'tvl',
-  limit = 10,
-  order: SortOrder = 'desc',
+  ...args: (string | number | bigint | boolean)[]
 ): Promise<string> {
+  const [metric, limit, order] = args as [string, number, string];
   try {
     // Fetch and process all pools
     const allPools = await pools.getAllPools();
@@ -299,10 +273,9 @@ export async function getRankedPools(
  * @returns JSON string containing filtered pool information
  */
 export async function getFilteredPools(
-  minTvl?: number,
-  minApr?: number,
-  tokens?: string[],
+  ...args: (string | number | bigint | boolean)[]
 ): Promise<string> {
+  const [minTvl, minApr, tokens] = args as [number, number, string[]];
   try {
     // Fetch and process all pools
     const allPools = await pools.getAllPools();

@@ -32,7 +32,9 @@ class Tools {
       description: string;
       required: boolean;
     }[],
-    process: (...args: any[]) => any,
+    process: (
+      ...args: (string | number | boolean | bigint)[]
+    ) => Promise<string> | string,
   ) {
     this.tools.push({ name, description, parameters, process });
   }
@@ -48,7 +50,7 @@ class Tools {
       JSON.stringify(this.getAllTools()),
     );
 
-    const ai: any = await atomaChat(this.sdk, [
+    const response = await atomaChat(this.sdk, [
       {
         content: finalPrompt,
         role: 'system',
@@ -58,10 +60,18 @@ class Tools {
         role: 'user',
       },
     ]);
-    const res = ai.choices[0].message.content;
 
-    const applicableTools: toolResponse[] = JSON.parse(res);
-    if (applicableTools.length > 0) return applicableTools[0];
+    // Handle the response based on the IntentAgentResponse interface
+    if (
+      response &&
+      'choices' in response &&
+      response.choices[0]?.message?.content
+    ) {
+      const parsedContent = JSON.parse(response.choices[0].message.content);
+      if (Array.isArray(parsedContent) && parsedContent.length > 0) {
+        return parsedContent[0] as toolResponse;
+      }
+    }
 
     return null;
   }
