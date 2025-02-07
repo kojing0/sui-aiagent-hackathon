@@ -15,8 +15,24 @@ import {
 } from './TradeTool';
 import { getCoinPrice, coinsToPrice } from './PriceTool';
 import { getTokenAPR } from './apr';
+import { FetchNFT } from './fetchNFTTool';
 class AfterMathTools {
   public static registerTools(tools: Tools) {
+    // NFT Tools
+    tools.registerTool(
+      'fetch_nft_tool',
+      'Tool to Fetch Yanbaru Quina NFT',
+      [
+        {
+          name: 'walletAddress',
+          type: 'string',
+          description: 'The wallet address to get Contract for',
+          required: true,
+        },
+      ],
+      FetchNFT,
+    );
+
     // Price Tools
     tools.registerTool(
       'price_tool',

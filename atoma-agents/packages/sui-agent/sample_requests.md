@@ -135,3 +135,12 @@ POST http://localhost:2512/query
     "prompt": "Generate a withdrawal transaction for pool 0xmno...345 to withdraw from wallet 0xpqr...678, burning 50 LP tokens with 0.5% slippage"
 }
 ```
+
+15. **Fetch NFT**:
+
+```json
+POST http://localhost:2512/query
+{
+    "prompt": "Get NFT to this wallet address 0xabc...123"
+}
+```
