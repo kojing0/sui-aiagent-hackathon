@@ -9,7 +9,7 @@ const address = process.env.WALLET_ADDRESS!;
 
 // Setting RPC Node
 const client = new SuiClient({
-  url: getFullnodeUrl('devnet'),
+  url: getFullnodeUrl('testnet'),
 });
 
 
@@ -43,11 +43,11 @@ export async function FetchNFT() {
 
   // const walletAddress = args[0] as string;
 
-  const packageObjectId = "0x92658318e8e769c25c2b1dbca082b4ec81e3caaa145009ae744699e4dc03ecb1";
+  const packageObjectId = "0x789c351fb058e548da6bbf6c251b60270f5308c13f6d9ca8af313f8398bfb3ce";
   const tx = new Transaction();
   try {
     tx.moveCall({
-      target: `${packageObjectId}::bird_nft::mint_and_transfer`,
+      target: `${packageObjectId}::reward_nft::mint_and_transfer`,
       arguments: [
         tx.pure.string('Yambaru Kuina'),
         tx.pure.string('bafybeihaktd4harts2viw64x5pg5k5cp7mprztgtxdejmlpx7h7qymt3bm')
